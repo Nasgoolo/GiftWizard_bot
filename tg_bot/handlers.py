@@ -44,18 +44,27 @@ class MassageHandler(TelegramHandler):
     def handle(self):
         match self.text.split():
             case 'weather', city:
-                geo_data = WeatherService.get_geo_data(city)
-                test_button = {
-                    'text': 'I am a test button',
-                    'callback_data': json.dumps({'test': 'data'})
-                }
-                markup = {
-                    'inline_keyboard': [[test_button]]
-                }
-                self.send_markup_massage('Test massage', markup)
+                try:
+                    geo_data = WeatherService.get_geo_data(city)
+                except WeatherServiceException as wse:
+                    self.send_message(str(wse))
+                else:
+                    buttons = []
+                    for item in geo_data:
+                        test_button = {
+                            'text': f'{item.get("name")} - {item.get("country_code")}',
+                            'callback_data': json.dumps(
+                                {'lat': item.get('latitude'), 'lon': item.get('longitude')})
+                        }
+                        buttons.append([test_button])
+                    markup = {
+                        'inline_keyboard': buttons
+                    }
+                    self.send_markup_massage('Test massage', markup)
 
 
 class CallbackHandler(TelegramHandler):
+
     def __init__(self, data):
         self.user = User(**data.get('from'))
         self.callback_data = json.loads(data.get('data'))
