@@ -30,16 +30,16 @@ class WeatherService:
     @staticmethod
     def get_current_weather_by_geo_data(lat, lon):
         pass
-        # params = {
-        #     'latitude': lat,
-        #     'longitude': lon,
-        #     'current_weather': True
-        # }
+        params = {
+            'latitude': lat,
+            'longitude': lon,
+            'current_weather': True
+        }
 
-    #     res = requests.get(f'{WeatherService.WEATHER_URL}', params=params)
-    #     if res.status_code != 200:
-    #         raise WeatherServiceException('Cannot get geo data')
-    #     return res.json().get('current_weather')
+        res = requests.get(f'{WeatherService.WEATHER_URL}', params=params)
+        if res.status_code != 200:
+            raise WeatherServiceException('Cannot get geo data')
+        return res.json().get('current_weather')
     #
     # @staticmethod
     # def get_sun_data(lat, lon):
